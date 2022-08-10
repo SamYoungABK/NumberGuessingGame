@@ -1,25 +1,20 @@
 #include <enet/enet.h>
-#include <iostream>
 #include "Menu.h"
-
-using std::cout; using std::endl;
-
-void InitializeEnet();
+#include "Server.h"
 
 int main()
 {
-	InitializeEnet();
-
 	Menu menu({ "Start Server", "Start Client"});
+	Server s;
 	menu.DisplayPrompt();
-	cout << menu.GetSelectedOption();
-}
 
-void InitializeEnet()
-{
-	if (enet_initialize() < 0)
+	switch (menu.GetSelectedOption())
 	{
-		cout << "Failed to initialize enet." << endl;
-		exit(EXIT_FAILURE);
+	case '1':
+		s.StartServer();
+		break;
+	default:
+		break;
 	}
 }
+
