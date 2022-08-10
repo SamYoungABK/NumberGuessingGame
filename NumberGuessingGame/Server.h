@@ -25,9 +25,9 @@ class Server
 	void HandleDisconnect(ENetEvent* e);
 	
 	void SendInitialGuessPrompt(ENetPeer* p);
-	void HandleGuess(ENetPeer* p, int guess);
-	void RespondIncorrectGuess(ENetPeer* p);
-	void RespondCorrectGuess(ENetPeer* p);
+	void HandleGuess(ENetEvent* e);
+	void RespondIncorrectGuess(ENetEvent* e, char* guess);
+	void RespondCorrectGuess(ENetEvent* e, char* guess);
 
 	int RandomizeNumber(int lowRange, int highRange);
 	void NewGame();

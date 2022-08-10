@@ -4,6 +4,7 @@
 #include <string>
 #include <random>
 #include <time.h>
+#include "Packet.h"
 
 
 using std::cout; using std::endl;
@@ -37,6 +38,12 @@ void Server::HandleConnect(ENetEvent* e)
 
 void Server::HandleReceive(ENetEvent* e)
 {
+	Packet packetReceived(e);
+
+	if (packetReceived.GetType() == PacketType::GUESS)
+	{
+		HandleGuess(e);
+	}
 }
 
 void Server::HandleDisconnect(ENetEvent* e)
@@ -50,18 +57,39 @@ void Server::HandleDisconnect(ENetEvent* e)
 
 void Server::SendInitialGuessPrompt(ENetPeer* p)
 {
+	Packet packetToSend(PacketType::MESSAGE, "Guess the number: ");
+	packetToSend.SendToPeer(p);
 }
 
-void Server::HandleGuess(ENetPeer* p, int guess)
+void Server::HandleGuess(ENetEvent* e)
 {
+	Packet packetReceived(e);
+	char* packetData = packetReceived.GetData();
+	int packetLength = strlen(packetData);
+
+	int guess = strtol(packetData, &(packetData)+packetLength, 0);
+	
+	guess == m_winningNumber ?
+		RespondCorrectGuess(e, packetData) :
+		RespondIncorrectGuess(e, packetData);
 }
 
-void Server::RespondIncorrectGuess(ENetPeer* p)
+void Server::RespondIncorrectGuess(ENetEvent* e, char* guess)
 {
+	PeerData* clientData = reinterpret_cast<PeerData*>(e->peer->data);
+	string guesserName = clientData->name;
+	string message = guesserName + " incorrectly guessed " + guess + ".";
+	Packet broadcastGuess(PacketType::MESSAGE, "");
+	broadcastGuess.Broadcast(m_server);
 }
 
-void Server::RespondCorrectGuess(ENetPeer* p)
+void Server::RespondCorrectGuess(ENetEvent* e, char* guess)
 {
+	PeerData* clientData = reinterpret_cast<PeerData*>(e->peer->data);
+	string guesserName = clientData->name;
+	string message = guesserName + " correctly guessed " + guess + ".";
+	Packet broadcastGuess(PacketType::MESSAGE, "");
+	broadcastGuess.Broadcast(m_server);
 }
 
 int Server::RandomizeNumber(int lowRange, int highRange)
