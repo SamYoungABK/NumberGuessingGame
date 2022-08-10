@@ -26,10 +26,10 @@ void Server::HandleConnect(ENetEvent* e)
 	PeerData* peerData = reinterpret_cast<PeerData*>(e->peer->data);
 	peerData = new PeerData();
 
-	peerData->name = (char*)(e->packet->data);
+	/*peerData->name = (char*)(e->packet->data);*/
 	peerData->address = e->peer->address;
 	
-	cout << peerData->name << " connected from " <<
+	cout << "User connected from " <<
 		peerData->address.host << ':' <<
 		peerData->address.port << endl;
 	
@@ -138,7 +138,7 @@ Server::Server()
 {
 	// set default address and port for the server to bind to.
 	// can be overwrittenwith SetAddress()
-	enet_address_set_host_ip(&m_address, ENET_HOST_ANY);
+	m_address.host = ENET_HOST_ANY;
 	m_address.port = 1234;
 }
 
@@ -155,6 +155,8 @@ void Server::StartServer()
 	InitialieEnet();
 
 	m_server = enet_host_create(&m_address, 10, 2, 0, 0);
+	if (!m_server) exit(EXIT_FAILURE);
+
 	NewGame();
 	ServerLoop();
 	

@@ -26,7 +26,7 @@ class Client
 public:
 	Client()
 	{
-		enet_address_set_host(&m_serverAddress, "localhost");
+		enet_address_set_host_ip(&m_serverAddress, "127.0.0.1");
 		m_serverAddress.port = 1234;
 	}
 

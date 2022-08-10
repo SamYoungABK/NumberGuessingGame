@@ -96,7 +96,7 @@ void Client::StartClient()
 	if (!m_server) exit(EXIT_FAILURE);
 
 	ENetEvent event;
-	if (enet_host_service(m_client, &event, 5000) > 0 &&
+	if (enet_host_service(m_client, &event, 10000) > 0 &&
 		event.type == ENET_EVENT_TYPE_CONNECT)
 	{
 		cout << "Connected!" << endl;
