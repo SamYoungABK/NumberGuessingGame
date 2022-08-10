@@ -25,7 +25,7 @@ int Menu::ConvertAndValidateInput(string userInput)
 	if (convertedInput < 0 || convertedInput > m_options.size())
 		return false;
 
-	return true;
+	return convertedInput;
 }
 
 void Menu::PrintOptions()
