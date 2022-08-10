@@ -1,13 +1,22 @@
 #pragma once
 #include <enet/enet.h>
+#include <string>
 
-
-
+using std::string;
 
 class Server
 {
 	int m_winningNumber = 0;
+	bool m_numberGuessed = false;
 	ENetAddress m_address;
+	ENetHost* m_server = nullptr;
+
+	struct PeerData
+	{
+		string name;
+		ENetAddress address;
+		int guessCount = 0;
+	};
 
 	void InitialieEnet();
 
@@ -19,8 +28,9 @@ class Server
 	void RespondIncorrectGuess(ENetPeer* p);
 	void RespondCorrectGuess(ENetPeer* p);
 
-	void RandomizeNumber();
+	int RandomizeNumber(int lowRange, int highRange);
 	void NewGame();
+	void ServerGameTick();
 
 	void ServerLoop();
 public:
