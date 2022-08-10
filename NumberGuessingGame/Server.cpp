@@ -28,8 +28,9 @@ void Server::HandleConnect(ENetEvent* e)
 	peerData->name = (char*)(e->packet->data);
 	peerData->address = e->peer->address;
 	
-	cout << "User connected from " << peerData->address.host <<
-		':' << peerData->address.port << endl;
+	cout << peerData->name << " connected from " <<
+		peerData->address.host << ':' <<
+		peerData->address.port << endl;
 }
 
 void Server::HandleReceive(ENetEvent* e)
@@ -38,10 +39,11 @@ void Server::HandleReceive(ENetEvent* e)
 
 void Server::HandleDisconnect(ENetEvent* e)
 {
-	cout << "User connected from " << peerAddress.host << ':' << peerAddress.port;
+	PeerData* peerData = reinterpret_cast<PeerData*>(e->peer->data);
+
+	cout << peerData->name << " disconnected." << endl;
 	
 	delete e->peer->data;
-
 	e->peer->data = nullptr;
 }
 
