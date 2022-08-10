@@ -31,6 +31,8 @@ void Server::HandleConnect(ENetEvent* e)
 	cout << peerData->name << " connected from " <<
 		peerData->address.host << ':' <<
 		peerData->address.port << endl;
+	
+	SendInitialGuessPrompt(e->peer);
 }
 
 void Server::HandleReceive(ENetEvent* e)
@@ -40,11 +42,14 @@ void Server::HandleReceive(ENetEvent* e)
 void Server::HandleDisconnect(ENetEvent* e)
 {
 	PeerData* peerData = reinterpret_cast<PeerData*>(e->peer->data);
-
 	cout << peerData->name << " disconnected." << endl;
 	
 	delete e->peer->data;
 	e->peer->data = nullptr;
+}
+
+void Server::SendInitialGuessPrompt(ENetPeer* p)
+{
 }
 
 void Server::HandleGuess(ENetPeer* p, int guess)
