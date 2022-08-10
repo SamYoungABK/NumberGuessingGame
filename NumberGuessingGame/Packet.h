@@ -46,6 +46,8 @@ public:
 		m_data = data;
 	}
 
+	char* getData() { return m_data; }
+
 	char* Serialize();
 	void Deserialize(char* serializedPacket);
 	void SendToPeer(ENetPeer* p);
