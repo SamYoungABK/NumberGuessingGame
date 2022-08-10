@@ -51,6 +51,22 @@ void Server::ServerLoop()
 {
 }
 
+Server::Server()
+{
+	// set default address and port for the server to bind to.
+	// can be overwrittenwith SetAddress()
+	enet_address_set_host_ip(&m_address, ENET_HOST_ANY);
+	m_address.port = 1234;
+}
+
+void Server::SetAddress(char* address, int port)
+{
+	enet_address_set_host_ip(&m_address, address);
+	m_address.port = 1234;
+}
+
 void Server::StartServer()
 {
+	InitialieEnet();
+	
 }

@@ -1,9 +1,13 @@
 #pragma once
 #include <enet/enet.h>
 
+
+
+
 class Server
 {
 	int m_winningNumber = 0;
+	ENetAddress m_address;
 
 	void InitialieEnet();
 
@@ -20,6 +24,9 @@ class Server
 
 	void ServerLoop();
 public:
+	Server();
+
+	void SetAddress(char* address, int port);
 	void StartServer();
 };
 
