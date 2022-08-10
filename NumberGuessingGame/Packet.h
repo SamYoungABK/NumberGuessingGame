@@ -14,6 +14,8 @@ class Packet
 
 public:
 	Packet();
+	Packet(PacketType m_type, char* data);
+	Packet(char* serializedPacket);
 
 	void SetType(PacketType type) { m_type = type; }
 	PacketType GetType() { return m_type; }
