@@ -6,6 +6,16 @@ Packet::Packet(char* serializedPacket)
     Deserialize(serializedPacket);
 }
 
+Packet::Packet(ENetEvent* e)
+{
+    char* serializedPacket;
+    int length = e->packet->dataLength;
+    serializedPacket = new char[e->packet->dataLength];
+    memcpy_s(serializedPacket, length, e->packet->data, length);
+
+    Deserialize(serializedPacket);
+}
+
 char* Packet::Serialize()
 {
     char* serializedPacket;

@@ -35,6 +35,7 @@ public:
 	{};
 
 	Packet(char* serializedPacket);
+	Packet(ENetEvent* e);
 
 	void SetType(PacketType type) { m_type = type; }
 	PacketType GetType() { return m_type; }
