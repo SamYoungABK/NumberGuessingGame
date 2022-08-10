@@ -1,9 +1,9 @@
 #include "Packet.h"
 #include <enet/enet.h>
 
-
-Packet::Packet()
+Packet::Packet(char* serializedPacket)
 {
+    Deserialize(serializedPacket);
 }
 
 char* Packet::Serialize()
@@ -27,6 +27,16 @@ char* Packet::Serialize()
 
 void Packet::Deserialize(char* serializedPacket)
 {
+    char* data;
+    int packetSize;
+    
+    m_type = PacketType(serializedPacket[0]);
+    m_dataLength = int(serializedPacket[1]);
+    
+    delete m_data;
+    m_data = new char[m_dataLength];
+
+    memcpy_s(&m_data, m_dataLength, &serializedPacket[2], m_dataLength);
 }
 
 void Packet::SendToPeer(ENetPeer* p)

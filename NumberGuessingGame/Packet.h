@@ -13,8 +13,18 @@ class Packet
 	char* m_data = nullptr;
 
 public:
-	Packet();
-	Packet(PacketType m_type, char* data);
+	Packet() :
+		m_type(PacketType::GUESS),
+		m_dataLength(0),
+		m_data(nullptr)
+	{};
+
+	Packet(PacketType type, char* data) :
+		m_type(type),
+		m_dataLength(strlen(data)),
+		m_data(data)
+	{};
+
 	Packet(char* serializedPacket);
 
 	void SetType(PacketType type) { m_type = type; }
