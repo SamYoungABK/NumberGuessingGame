@@ -3,6 +3,7 @@
 
 enum class PacketType : char
 {
+	MESSAGE = 'm',
 	GUESS = 'g',
 };
 
