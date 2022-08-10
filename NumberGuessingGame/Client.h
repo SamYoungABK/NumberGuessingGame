@@ -8,18 +8,19 @@ class Client
 	std::thread* m_inputThread = nullptr;
 	ENetAddress m_serverAddress;
 
-	ENetHost* client;
+	ENetHost* m_client = nullptr;
+	ENetPeer* m_server = nullptr;
 
 	void InitializeEnet();
 	void KbListen();
 	void StartThreads();
 
-	void HandleConnect();
-	void HandleReceive();
-	void HandleDisconnect();
+	void HandleConnect(ENetEvent* e);
+	void HandleReceive(ENetEvent* e);
+	void HandleDisconnect(ENetEvent* e);
 
-	void SendGuess();
-	void DisplayMessage();
+	void SendGuess(ENetEvent* e);
+	void DisplayMessage(ENetEvent* e);
 
 	void ClientLoop();
 public:
@@ -33,7 +34,7 @@ public:
 		m_serverAddress(addr)
 	{}
 
-	void SetAddress();
+	void SetAddress(char* address, int port);
 	void StartClient();
 };
 
