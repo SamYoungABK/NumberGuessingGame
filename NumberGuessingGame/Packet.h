@@ -27,5 +27,5 @@ public:
 	char* Serialize();
 	void Deserialize(char* serializedPacket);
 	void SendToPeer(ENetPeer* p);
-	void Broadcast();
+	void Broadcast(ENetHost* server);
 };
