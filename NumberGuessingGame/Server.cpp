@@ -112,7 +112,7 @@ void Server::RespondCorrectGuess(ENetEvent* e, char* guess)
 
 int Server::RandomizeNumber(int lowRange, int highRange)
 {
-	int newNumber = (std::rand() % (highRange)) + lowRange+1;
+	int newNumber = (std::rand() % (highRange)) + lowRange;
 	return newNumber;
 }
 
