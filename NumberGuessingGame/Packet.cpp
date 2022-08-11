@@ -44,6 +44,6 @@ void Packet::Broadcast(ENetHost* server)
 
     memcpy_s(pd.data, pdDataSize, m_data, m_dataLength);
 
-    ENetPacket* packetToSend = enet_packet_create(reinterpret_cast<void*>(this), sizeof(this)+1, ENET_PACKET_FLAG_RELIABLE);
+    ENetPacket* packetToSend = enet_packet_create(reinterpret_cast<void*>(this), sizeof(this), ENET_PACKET_FLAG_RELIABLE);
     enet_host_broadcast(server, 0, packetToSend);
 }
