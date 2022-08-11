@@ -5,6 +5,7 @@ enum class PacketType : char
 {
 	MESSAGE = 'm',
 	GUESS = 'g',
+	NAME = 'n',
 };
 
 struct PacketData

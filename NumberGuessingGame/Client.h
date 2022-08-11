@@ -31,7 +31,7 @@ class Client
 	void KbListen();
 	void StartThreads();
 
-	void HandleConnect(ENetEvent* e);
+	void SendName();
 	void HandleReceive(ENetEvent* e);
 	void HandleDisconnect(ENetEvent* e);
 

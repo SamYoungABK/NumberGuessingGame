@@ -26,6 +26,7 @@ class Server
 	
 	void SendInitialGuessPrompt(ENetPeer* p);
 	void HandleGuess(ENetEvent* e);
+	void HandleName(ENetEvent* e);
 	void RespondIncorrectGuess(ENetEvent* e, char* guess);
 	void RespondCorrectGuess(ENetEvent* e, char* guess);
 

@@ -93,8 +93,10 @@ void Client::StartThreads()
 		m_inputThread = new std::thread(&Client::DrawScreen, this);
 }
 
-void Client::HandleConnect(ENetEvent* e)
+void Client::SendName()
 {
+	Packet namePacket(PacketType::NAME, m_name.c_str());
+	namePacket.SendToPeer(m_server);
 }
 
 void Client::HandleReceive(ENetEvent* e)
@@ -137,9 +139,6 @@ void Client::ClientLoop()
 		enet_host_service(m_client, &event, 1000);
 		switch (event.type)
 		{
-		case ENET_EVENT_TYPE_CONNECT:
-			HandleConnect(&event);
-			break;
 		case ENET_EVENT_TYPE_RECEIVE:
 			HandleReceive(&event);
 			break;
@@ -181,6 +180,8 @@ void Client::StartClient()
 	}
 
 	StartThreads();
+
+	SendName();
 
 	ClientLoop();
 

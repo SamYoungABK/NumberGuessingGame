@@ -26,8 +26,7 @@ void Server::HandleConnect(ENetEvent* e)
 	PeerData* peerData = new PeerData(); 
 	e->peer->data = reinterpret_cast<void*>(peerData);
 	enet_peer_timeout(e->peer, 1000, 1000, 1500);
-	
-	peerData->name = "test username";
+
 	peerData->address = e->peer->address;
 	
 	cout << "User connected from " <<
@@ -41,9 +40,10 @@ void Server::HandleReceive(ENetEvent* e)
 {
 	Packet packetReceived(e);
 
-	if (packetReceived.GetType() == PacketType::GUESS)
+	switch (packetReceived.GetType())
 	{
-		HandleGuess(e);
+	case PacketType::GUESS: HandleGuess(e); break;
+	case PacketType::NAME: HandleName(e); break;
 	}
 }
 
@@ -74,6 +74,14 @@ void Server::HandleGuess(ENetEvent* e)
 	guess == m_winningNumber ?
 		RespondCorrectGuess(e, packetData) :
 		RespondIncorrectGuess(e, packetData);
+}
+
+void Server::HandleName(ENetEvent* e)
+{
+	Packet packetReceived(e);
+	PeerData* peerData = reinterpret_cast<PeerData*>(e->peer->data);
+
+	peerData->name = packetReceived.GetData();
 }
 
 void Server::RespondIncorrectGuess(ENetEvent* e, char* guess)
