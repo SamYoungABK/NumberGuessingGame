@@ -25,8 +25,8 @@ void Server::HandleConnect(ENetEvent* e)
 {
 	PeerData* peerData = new PeerData(); 
 	e->peer->data = reinterpret_cast<void*>(peerData);
-
-	/*peerData->name = (char*)(e->packet->data);*/
+	enet_peer_timeout(e->peer, 1000, 1000, 1500);
+	
 	peerData->name = "test username";
 	peerData->address = e->peer->address;
 	

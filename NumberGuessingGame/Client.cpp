@@ -106,6 +106,7 @@ void Client::HandleReceive(ENetEvent* e)
 
 void Client::HandleDisconnect(ENetEvent* e)
 {
+	m_outputLog.push_back("Disconnected from server.");
 }
 
 void Client::SendGuess()
@@ -144,6 +145,7 @@ void Client::ClientLoop()
 			break;
 		case ENET_EVENT_TYPE_DISCONNECT:
 			HandleDisconnect(&event);
+			running = false;
 			break;
 		}
 
@@ -158,6 +160,7 @@ void Client::SetAddress(char* address, int port)
 
 void Client::StartClient()
 {
+	PromptName();
 	InitializeEnet();
 
 	m_client = enet_host_create(NULL, 1, 2, 0, 0);
