@@ -2,16 +2,28 @@
 
 #include <enet/enet.h>
 #include <thread>
+#include <vector>
+#include <string>
+
+using std::vector; using std::string;
 
 class Client
 {
-	std::thread* m_inputThread = nullptr;
 	ENetAddress m_serverAddress;
+
+	std::thread* m_inputThread = nullptr;
+	std::thread* m_drawThread = nullptr;
+	
 
 	ENetHost* m_client = nullptr;
 	ENetPeer* m_server = nullptr;
 
+	vector<string> m_outputLog;
+	vector<char> m_inputQueue;
+
 	void InitializeEnet();
+
+	void DrawScreen();
 	void KbListen();
 	void StartThreads();
 

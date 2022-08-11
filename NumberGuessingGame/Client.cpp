@@ -1,10 +1,14 @@
 #include "Client.h"
 #include "Packet.h"
+
 #include <enet/enet.h>
 #include <iostream>
 #include <conio.h>
+#include <vector>
+#include <string>
 
 using std::cout; using std::endl;
+using std::vector; using std::string;
 
 void Client::InitializeEnet()
 {
@@ -17,6 +21,31 @@ void Client::InitializeEnet()
 	atexit(enet_deinitialize);
 }
 
+void Client::DrawScreen()
+{
+	int logSize = 0;
+	int inputQueueSize = 0;
+	bool drawing = true;
+
+	while (drawing)
+	{
+		if ((m_outputLog.size() > logSize) ||
+			m_inputQueue.size() != inputQueueSize)
+		{
+			system("cls");
+			for (string message : m_outputLog)
+				cout << message << endl;
+			cout << endl;
+
+			for (char c : m_inputQueue)
+				cout << c;
+
+			logSize = m_outputLog.size();
+			inputQueueSize = m_inputQueue.size();
+		}
+	}
+}
+
 void Client::KbListen()
 {
 	bool listening = true;
@@ -24,10 +53,17 @@ void Client::KbListen()
 	{
 		if (_kbhit())
 		{
+			const int kBackspace = 8;
 			char keyPressed = _getch();
+
 			if (keyPressed >= '0' && keyPressed <= '9')
 			{
-
+				m_inputQueue.push_back(keyPressed);
+			}
+			
+			if (keyPressed == kBackspace && m_inputQueue.size() > 0)
+			{
+				m_inputQueue.pop_back();
 			}
 		}
 	}
@@ -35,6 +71,11 @@ void Client::KbListen()
 
 void Client::StartThreads()
 {
+	if (m_inputThread == nullptr)
+		m_inputThread = new std::thread(&Client::KbListen, this);
+	
+	if (m_drawThread == nullptr)
+		m_inputThread = new std::thread(&Client::DrawScreen, this);
 }
 
 void Client::HandleConnect(ENetEvent* e)
@@ -58,7 +99,7 @@ void Client::SendGuess(ENetEvent* e)
 
 void Client::DisplayMessage(char* message)
 {
-	cout << message << endl;
+	m_outputLog.push_back(message);
 }
 
 void Client::ClientLoop()
@@ -104,12 +145,14 @@ void Client::StartClient()
 	if (enet_host_service(m_client, &event, 10000) > 0 &&
 		event.type == ENET_EVENT_TYPE_CONNECT)
 	{
-		cout << "Connected!" << endl;
+		m_outputLog.push_back("Connected!");
 	}
 	else
 	{
 		cout << "Unable to connect to server :( " << endl;
 	}
+
+	StartThreads();
 
 	ClientLoop();
 
