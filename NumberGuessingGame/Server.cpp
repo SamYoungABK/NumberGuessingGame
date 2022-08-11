@@ -120,7 +120,7 @@ void Server::NewGame()
 {
 	m_winningNumber = RandomizeNumber(1, 10);
 	m_numberGuessed = false;
-	string message = "A new game has begun. Number has been randomized!";
+	string message = "A new game has begun. Number has been randomized!\n";
 	Packet newGameMessage(PacketType::MESSAGE, message.c_str());
 	newGameMessage.Broadcast(m_server);
 }
