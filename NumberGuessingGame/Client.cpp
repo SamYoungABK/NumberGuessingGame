@@ -1,4 +1,5 @@
 #include "Client.h"
+#include "Packet.h"
 #include <enet/enet.h>
 #include <iostream>
 #include <conio.h>
@@ -42,6 +43,9 @@ void Client::HandleConnect(ENetEvent* e)
 
 void Client::HandleReceive(ENetEvent* e)
 {
+	Packet receivedPacket(e);
+	if (receivedPacket.GetType() == PacketType::MESSAGE)
+		DisplayMessage(receivedPacket.GetData());
 }
 
 void Client::HandleDisconnect(ENetEvent* e)
@@ -52,8 +56,9 @@ void Client::SendGuess(ENetEvent* e)
 {
 }
 
-void Client::DisplayMessage(ENetEvent* e)
+void Client::DisplayMessage(char* message)
 {
+	cout << message << endl;
 }
 
 void Client::ClientLoop()

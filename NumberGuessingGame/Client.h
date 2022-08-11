@@ -20,7 +20,7 @@ class Client
 	void HandleDisconnect(ENetEvent* e);
 
 	void SendGuess(ENetEvent* e);
-	void DisplayMessage(ENetEvent* e);
+	void DisplayMessage(char* message);
 
 	void ClientLoop();
 public:

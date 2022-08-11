@@ -22,15 +22,15 @@ public:
 
 	Packet(PacketType type, const char* data) :
 		m_type(type),
-		m_dataLength(strlen(data))
+		m_dataLength(strlen(data) + 1)
 	{
 		m_data = new char[m_dataLength];
-		memcpy_s(&m_data, m_dataLength, &data, m_dataLength);
+		memcpy_s(&m_data, sizeof(m_data), &data, sizeof(data));
 	};
 
 	Packet(PacketType type, char* data) :
 		m_type(type),
-		m_dataLength(strlen(data)),
+		m_dataLength(strlen(data) + 1),
 		m_data(data)
 	{};
 

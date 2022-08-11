@@ -23,8 +23,8 @@ void Server::InitialieEnet()
 
 void Server::HandleConnect(ENetEvent* e)
 {
-	PeerData* peerData = reinterpret_cast<PeerData*>(e->peer->data);
-	peerData = new PeerData();
+	PeerData* peerData = new PeerData(); 
+	e->peer->data = reinterpret_cast<void*>(peerData);
 
 	/*peerData->name = (char*)(e->packet->data);*/
 	peerData->address = e->peer->address;
@@ -57,8 +57,9 @@ void Server::HandleDisconnect(ENetEvent* e)
 
 void Server::SendInitialGuessPrompt(ENetPeer* p)
 {
-	Packet packetToSend(PacketType::MESSAGE, "Guess the number: ");
-	packetToSend.SendToPeer(p);
+	Packet pack(PacketType::MESSAGE, "Guess the number: ");
+	
+	pack.SendToPeer(p);
 }
 
 void Server::HandleGuess(ENetEvent* e)
@@ -137,7 +138,7 @@ void Server::ServerLoop()
 Server::Server()
 {
 	// set default address and port for the server to bind to.
-	// can be overwrittenwith SetAddress()
+	// can be overwritten with Server::SetAddress()
 	m_address.host = ENET_HOST_ANY;
 	m_address.port = 1234;
 }
