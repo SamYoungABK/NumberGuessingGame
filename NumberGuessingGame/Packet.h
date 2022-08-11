@@ -10,19 +10,8 @@ enum class PacketType : char
 struct PacketData
 {
 	PacketType type;
+	char dataLength;
 	char data[100];
-};
-
-struct MessagePacketData
-{
-	PacketType type = PacketType::MESSAGE;
-	char data[100];
-};
-
-struct GuessPacketData
-{
-	PacketType type = PacketType::GUESS;
-	unsigned int guess;
 };
 
 class Packet
@@ -44,7 +33,7 @@ public:
 		m_dataLength(strlen(data) + 1)
 	{
 		m_data = new char[m_dataLength];
-		memcpy_s(&m_data, sizeof(data), &data, sizeof(data));
+		memcpy_s(&m_data, sizeof(m_data), &data, sizeof(data));
 	};
 
 	Packet(PacketType type, char* data) :
@@ -53,7 +42,7 @@ public:
 		m_data(data)
 	{};
 
-	Packet(char* serializedPacket);
+	Packet(char* packetData);
 	Packet(ENetEvent* e);
 
 	void SetType(PacketType type) { m_type = type; }

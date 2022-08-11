@@ -109,6 +109,7 @@ void Client::SendGuess()
 
 	for (int i = 0; i < m_inputQueue.size(); i++)
 		guess[i] = m_inputQueue[i];
+	guess[m_inputQueue.size()] = '\0';
 
 	Packet guessPacket(PacketType::GUESS, guess);
 	guessPacket.SendToPeer(m_server);

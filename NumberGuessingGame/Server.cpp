@@ -27,6 +27,7 @@ void Server::HandleConnect(ENetEvent* e)
 	e->peer->data = reinterpret_cast<void*>(peerData);
 
 	/*peerData->name = (char*)(e->packet->data);*/
+	peerData->name = "test username";
 	peerData->address = e->peer->address;
 	
 	cout << "User connected from " <<
@@ -66,7 +67,7 @@ void Server::HandleGuess(ENetEvent* e)
 {
 	Packet packetReceived(e);
 	char* packetData = packetReceived.GetData();
-	int packetLength = strlen(packetData);
+	int packetLength = sizeof(packetData);
 
 	int guess = strtol(packetData, &(packetData)+packetLength, 0);
 	
@@ -78,19 +79,25 @@ void Server::HandleGuess(ENetEvent* e)
 void Server::RespondIncorrectGuess(ENetEvent* e, char* guess)
 {
 	PeerData* clientData = reinterpret_cast<PeerData*>(e->peer->data);
+
 	string guesserName = clientData->name;
 	string message = guesserName + " incorrectly guessed " + guess + ".";
-	Packet broadcastGuess(PacketType::MESSAGE, "");
+
+	Packet broadcastGuess(PacketType::MESSAGE, message.c_str());
 	broadcastGuess.Broadcast(m_server);
 }
 
 void Server::RespondCorrectGuess(ENetEvent* e, char* guess)
 {
 	PeerData* clientData = reinterpret_cast<PeerData*>(e->peer->data);
+
 	string guesserName = clientData->name;
-	string message = guesserName + " correctly guessed " + guess + ".";
-	Packet broadcastGuess(PacketType::MESSAGE, "");
+	string message = "\n******WINNER!!!!*****\n" + guesserName + " correctly guessed " + guess + ".";
+
+	Packet broadcastGuess(PacketType::MESSAGE, message.c_str());
 	broadcastGuess.Broadcast(m_server);
+
+	m_numberGuessed = true;
 }
 
 int Server::RandomizeNumber(int lowRange, int highRange)
@@ -103,6 +110,9 @@ void Server::NewGame()
 {
 	m_winningNumber = RandomizeNumber(1, 10);
 	m_numberGuessed = false;
+	string message = "A new game has begun. Number has been randomized!";
+	Packet newGameMessage(PacketType::MESSAGE, message.c_str());
+	newGameMessage.Broadcast(m_server);
 }
 
 void Server::ServerGameTick()
