@@ -8,7 +8,8 @@
 #include <string>
 #include <thread>
 
-using std::cout; using std::endl;
+using std::cout; using std::cin;
+using std::endl;
 using std::vector; using std::string;
 
 void Client::InitializeEnet()
@@ -20,6 +21,12 @@ void Client::InitializeEnet()
 	}
 
 	atexit(enet_deinitialize);
+}
+
+void Client::PromptName()
+{
+	std::cout << endl << "Enter a name: ";
+	getline(cin, m_name);
 }
 
 void Client::DrawScreen()

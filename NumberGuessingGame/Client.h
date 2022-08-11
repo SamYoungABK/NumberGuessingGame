@@ -11,6 +11,8 @@ class Client
 {
 	ENetAddress m_serverAddress;
 
+	string m_name;
+
 	std::thread* m_inputThread = nullptr;
 	std::thread* m_drawThread = nullptr;
 	
@@ -22,6 +24,8 @@ class Client
 	vector<char> m_inputQueue;
 
 	void InitializeEnet();
+
+	void PromptName();
 
 	void DrawScreen();
 	void KbListen();
