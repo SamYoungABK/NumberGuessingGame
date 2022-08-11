@@ -136,7 +136,7 @@ void Client::ClientLoop()
 	bool running = true;
 	while (running)
 	{
-		enet_host_service(m_client, &event, 1000);
+		enet_host_service(m_client, &event, 500);
 		switch (event.type)
 		{
 		case ENET_EVENT_TYPE_RECEIVE:

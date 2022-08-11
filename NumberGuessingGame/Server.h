@@ -14,6 +14,7 @@ class Server
 	struct PeerData
 	{
 		string name;
+		int wins = 0;
 		ENetAddress address;
 		int guessCount = 0;
 	};

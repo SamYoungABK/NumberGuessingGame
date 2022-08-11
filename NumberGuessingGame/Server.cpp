@@ -98,9 +98,11 @@ void Server::RespondIncorrectGuess(ENetEvent* e, char* guess)
 void Server::RespondCorrectGuess(ENetEvent* e, char* guess)
 {
 	PeerData* clientData = reinterpret_cast<PeerData*>(e->peer->data);
-
+	clientData->wins++;
 	string guesserName = clientData->name;
-	string message = "\n******WINNER!!!!*****\n" + guesserName + " correctly guessed " + guess + ".";
+	string message = "\n******WINNER!!!!*****\n"
+		+ guesserName + " correctly guessed " + guess + ".\n" +
+		guesserName + " has won " + std::to_string(clientData->wins) + " times!";
 
 	Packet broadcastGuess(PacketType::MESSAGE, message.c_str());
 	broadcastGuess.Broadcast(m_server);
@@ -135,7 +137,7 @@ void Server::ServerLoop()
 	while (running)
 	{
 		ENetEvent event;
-		enet_host_service(m_server, &event, 1000);
+		enet_host_service(m_server, &event, 500);
 
 		switch (event.type)
 		{
