@@ -31,7 +31,7 @@ class Client
 	void HandleReceive(ENetEvent* e);
 	void HandleDisconnect(ENetEvent* e);
 
-	void SendGuess(ENetEvent* e);
+	void SendGuess();
 	void DisplayMessage(char* message);
 
 	void ClientLoop();

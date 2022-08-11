@@ -1,62 +1,49 @@
 #include "Packet.h"
 #include <enet/enet.h>
+#include <string>
 
-Packet::Packet(char* serializedPacket)
+using std::string;
+
+Packet::Packet(char* packetData)
 {
-    Deserialize(serializedPacket);
+    PacketData pd = *reinterpret_cast<PacketData*>(packetData);
+    
+    m_type = PacketType(pd.type);
+    m_data = pd.data;
+    m_dataLength = sizeof(pd.data);
 }
 
 Packet::Packet(ENetEvent* e)
 {
-    char* serializedPacket;
-    int length = e->packet->dataLength + 1;
-    serializedPacket = new char[e->packet->dataLength];
-    memcpy_s(serializedPacket, length, e->packet->data, length);
+    PacketData pd = *reinterpret_cast<PacketData*>((char*)(e->packet->data));
 
-    Deserialize(serializedPacket);
-}
-
-char* Packet::Serialize()
-{
-    char* serializedPacket;
-    int packetSize;
-
-    packetSize = sizeof(m_type) +
-        sizeof(m_dataLength) +
-        strlen(m_data);
-
-    serializedPacket = new char[packetSize+1];
-
-    memcpy_s(serializedPacket+0, 1, &m_type, 1);
-    memcpy_s(serializedPacket+1, 1, &m_dataLength, 1);
-    memcpy_s(serializedPacket+2, m_dataLength, m_data, m_dataLength);
-    serializedPacket[packetSize] = '\0';
-
-    return serializedPacket;
-}
-
-void Packet::Deserialize(char* serializedPacket)
-{
-    char* data;
-    int packetSize;
-    
-    m_type = PacketType(serializedPacket[0]);
-    m_dataLength = int(serializedPacket[1]);
-    
-    delete m_data;
-    m_data = new char[m_dataLength];
-
-    memcpy_s(m_data, m_dataLength, &serializedPacket[2], m_dataLength);
+    m_type = PacketType(pd.type);
+    m_data = pd.data;
+    m_dataLength = sizeof(pd.data);
 }
 
 void Packet::SendToPeer(ENetPeer* p)
 {
-    ENetPacket* packetToSend = enet_packet_create(Serialize(), m_dataLength+20, ENET_PACKET_FLAG_RELIABLE);
+    PacketData pd;
+    pd.type = m_type;
+    int pdDataSize = sizeof(pd.data);
+    int mDataSize = sizeof(m_dataLength);
+
+    memcpy_s(pd.data, pdDataSize, m_data, m_dataLength);
+
+    ENetPacket* packetToSend = enet_packet_create(reinterpret_cast<void*>(&pd), sizeof(pd), ENET_PACKET_FLAG_RELIABLE);
     enet_peer_send(p, 0, packetToSend);
 }
 
 void Packet::Broadcast(ENetHost* server)
 {
-    ENetPacket* packetToSend = enet_packet_create(Serialize(), m_dataLength+20, ENET_PACKET_FLAG_RELIABLE);
+    PacketData pd;
+    pd.type = m_type;
+    int pdDataSize = sizeof(pd.data);
+    int mDataSize = sizeof(m_dataLength);
+
+    memcpy_s(pd.data, pdDataSize, m_data, m_dataLength);
+
+    ENetPacket* packetToSend = enet_packet_create(reinterpret_cast<void*>(this), sizeof(this)+1, ENET_PACKET_FLAG_RELIABLE);
     enet_host_broadcast(server, 0, packetToSend);
 }

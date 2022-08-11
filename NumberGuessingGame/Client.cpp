@@ -6,6 +6,7 @@
 #include <conio.h>
 #include <vector>
 #include <string>
+#include <thread>
 
 using std::cout; using std::endl;
 using std::vector; using std::string;
@@ -54,6 +55,7 @@ void Client::KbListen()
 		if (_kbhit())
 		{
 			const int kBackspace = 8;
+			const int kEnter = 13;
 			char keyPressed = _getch();
 
 			if (keyPressed >= '0' && keyPressed <= '9')
@@ -64,6 +66,12 @@ void Client::KbListen()
 			if (keyPressed == kBackspace && m_inputQueue.size() > 0)
 			{
 				m_inputQueue.pop_back();
+			}
+
+			if (keyPressed == kEnter)
+			{
+				SendGuess();
+				m_inputQueue.erase(m_inputQueue.begin(), m_inputQueue.end());
 			}
 		}
 	}
@@ -93,8 +101,17 @@ void Client::HandleDisconnect(ENetEvent* e)
 {
 }
 
-void Client::SendGuess(ENetEvent* e)
+void Client::SendGuess()
 {
+	char* guess;
+	// build the guess based off of the content of m_inputQueue
+	guess = new char[m_inputQueue.size()];
+
+	for (int i = 0; i < m_inputQueue.size(); i++)
+		guess[i] = m_inputQueue[i];
+
+	Packet guessPacket(PacketType::GUESS, guess);
+	guessPacket.SendToPeer(m_server);
 }
 
 void Client::DisplayMessage(char* message)
